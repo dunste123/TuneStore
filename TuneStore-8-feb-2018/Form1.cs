@@ -318,6 +318,11 @@ I'M NOT RESPONSIBLE FOR ANY DAMAGE TO YOUR COMPUTER!", "WARNING", MessageBoxButt
             }
         }
         
+        /// <summary>
+        /// This opens a file dialog for the user to choose where to save the playlist file
+        /// </summary>
+        /// <param name="t">The playlist to save</param>
+        /// <param name="file">the filename + path</param>
         private void SaveTracksToFile(List<Track> t, string file) {
             SaveFileDialog dialog = new SaveFileDialog();
             dialog.DefaultExt = ".tstore";
