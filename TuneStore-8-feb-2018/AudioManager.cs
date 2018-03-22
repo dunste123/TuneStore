@@ -232,9 +232,8 @@ namespace TuneStore_8_feb_2018 {
         /// <param name="playlist">The current playlsit</param>
         /// <param name="filename">The file (path) to write to</param>
         public void ExportList(List<Track> playlist, String filename) {
-            //
+            //I think that it's goldplating because I'm using an external lib
             String json = JsonConvert.SerializeObject(playlist);
-            //String filename = "TuneStorePlaylist-" + DateTime.Now.ToString("MM-dd-yyyy_hh-mm-ss") + ".tstore";
             if (!File.Exists(filename))
                 File.Create(filename).Close();
             
@@ -251,7 +250,8 @@ namespace TuneStore_8_feb_2018 {
         /// <returns>A possible null list with the tracks</returns>
         public List<Track> ImportList(String json) {
             try {
-                List<Track> tracks = JsonConvert.DeserializeObject<List<Track>>(json); //I think that it's goldplating because I'm using an external lib
+                //I think that it's goldplating because I'm using an external lib
+                List<Track> tracks = JsonConvert.DeserializeObject<List<Track>>(json);
                 return tracks;
             }
             catch(JsonSerializationException ex) {

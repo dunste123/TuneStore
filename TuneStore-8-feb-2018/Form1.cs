@@ -19,6 +19,8 @@ namespace TuneStore_8_feb_2018 {
         private AudioManager manager;
         private List<Track> tracks = new List<Track>();
         private Regex regex = new Regex("(?:\\d+\\: )(.*)");
+        //These are the file types that you are allowed to open
+        private String fileFilter = "TuneStorePlaylist (*.tstore)|*.tstore|JSON file (*.json)|*.json|Text (*.txt)|*.txt|All Types|*";
 
         public Form1() {
             InitializeComponent();
@@ -161,27 +163,6 @@ namespace TuneStore_8_feb_2018 {
             this.lbTracksDSte.Items.AddRange(temp.ToArray());
         }
 
-        private void btnSaveSearchDSte_Click(object sender, EventArgs e) {
-            String text = this.txbSearchDSte.Text.ToLower();
-            List<Track> temp = new List<Track>();
-            foreach (Track t in tracks) {
-                if (t.DisplayName.ToLower().IndexOf(text) > -1) {
-                    temp.Add(t);
-                    temp[temp.Count - 1].DisplayName = temp.Count + ": " + temp[temp.Count - 1].SafeFileName;
-                }
-            }
-
-            String filename = manager.GetDefaultFileName();
-
-            SaveFileDialog dialog = new SaveFileDialog();
-            dialog.DefaultExt = ".tstore";
-            dialog.FileName = filename;
-            dialog.Filter = "TuneStorePlaylist (*.tstore)|*.tstore|JSON file (*.json)|*.json|Text (*.txt)|*.txt|All Types|*";
-            if (dialog.ShowDialog() == DialogResult.OK) {
-                manager.ExportList(temp, dialog.FileName);
-            }
-        }
-
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e) {
             //
             String message = @"TuneStore
@@ -233,20 +214,13 @@ I'M NOT RESPONSIBLE FOR ANY DAMAGE TO YOUR COMPUTER!", "WARNING", MessageBoxButt
         private void savePlaylistToolStripMenuItem_Click(object sender, EventArgs e) {
 
             String filename = manager.GetDefaultFileName();
-
-            SaveFileDialog dialog = new SaveFileDialog();
-            dialog.DefaultExt = ".tstore";
-            dialog.FileName = filename;
-            dialog.Filter = "TuneStorePlaylist (*.tstore)|*.tstore|JSON file (*.json)|*.json|Text (*.txt)|*.txt|All Types|*";
-            if (dialog.ShowDialog() == DialogResult.OK) {
-                manager.ExportList(tracks, dialog.FileName);
-            }
+            SaveTracksToFile(tracks, manager.GetDefaultFileName());
         }
 
         private void loadPlaylistToolStripMenuItem_Click(object sender, EventArgs e) {
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.DefaultExt = ".tstore";
-            dialog.Filter = "TuneStorePlaylist (*.tstore)|*.tstore|JSON file (*.json)|*.json|Text (*.txt)|*.txt|All Types|*";
+            dialog.Filter = fileFilter;
             if (dialog.ShowDialog() != DialogResult.OK) {
                 return;
             }
@@ -261,6 +235,18 @@ I'M NOT RESPONSIBLE FOR ANY DAMAGE TO YOUR COMPUTER!", "WARNING", MessageBoxButt
             foreach (Track t in tracks) {
                 this.lbTracksDSte.Items.Add(t.DisplayName);
             }
+        }
+
+        private void btnSaveSearchDSte_Click(object sender, EventArgs e) {
+            String text = this.txbSearchDSte.Text.ToLower();
+            List<Track> temp = new List<Track>();
+            foreach (Track t in tracks) {
+                if (t.DisplayName.ToLower().IndexOf(text) > -1) {
+                    temp.Add(t);
+                    temp[temp.Count - 1].DisplayName = temp.Count + ": " + temp[temp.Count - 1].SafeFileName;
+                }
+            }
+            SaveTracksToFile(temp, manager.GetDefaultFileName());
         }
         #endregion
 
@@ -329,6 +315,16 @@ I'M NOT RESPONSIBLE FOR ANY DAMAGE TO YOUR COMPUTER!", "WARNING", MessageBoxButt
             catch {
                 if(stopOnFail)
                     manager.StopSong();
+            }
+        }
+        
+        private void SaveTracksToFile(List<Track> t, string file) {
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.DefaultExt = ".tstore";
+            dialog.FileName = file;
+            dialog.Filter = fileFilter;
+            if (dialog.ShowDialog() == DialogResult.OK) {
+                manager.ExportList(t, dialog.FileName);
             }
         }
         #endregion
