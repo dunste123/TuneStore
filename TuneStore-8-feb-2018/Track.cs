@@ -32,5 +32,8 @@ namespace TuneStore_8_feb_2018 {
         /// </summary>
         public String DisplayName { get; set; }
 
+        public override string ToString() {
+            return DisplayName;
+        }
     }
 }

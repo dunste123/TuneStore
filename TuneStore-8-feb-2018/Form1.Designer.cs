@@ -61,10 +61,12 @@ namespace TuneStore_8_feb_2018 {
             this.lblCurrentTrackDSte = new System.Windows.Forms.Label();
             this.txbTrackNumDSte = new System.Windows.Forms.TextBox();
             this.btnPlayTrackDSte = new System.Windows.Forms.Button();
+            this.btnNextTrackDSte = new System.Windows.Forms.Button();
+            this.btnPrevTrackDSte = new System.Windows.Forms.Button();
             this.btnPauseDSte = new System.Windows.Forms.Button();
             this.tmrSpashDSte = new System.Windows.Forms.Timer(this.components);
-            this.btnPrevTrackDSte = new System.Windows.Forms.Button();
-            this.btnNextTrackDSte = new System.Windows.Forms.Button();
+            this.btnShufflePlaylistDSte = new System.Windows.Forms.Button();
+            this.cbAutoShuffleDSte = new System.Windows.Forms.CheckBox();
             this.menuStrip1.SuspendLayout();
             this.tabMainDSte.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -74,7 +76,7 @@ namespace TuneStore_8_feb_2018 {
             // 
             // btnAddTrackDSte
             // 
-            this.btnAddTrackDSte.Location = new System.Drawing.Point(590, 86);
+            this.btnAddTrackDSte.Location = new System.Drawing.Point(590, 68);
             this.btnAddTrackDSte.Margin = new System.Windows.Forms.Padding(2);
             this.btnAddTrackDSte.Name = "btnAddTrackDSte";
             this.btnAddTrackDSte.Size = new System.Drawing.Size(148, 35);
@@ -228,6 +230,8 @@ namespace TuneStore_8_feb_2018 {
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.cbAutoShuffleDSte);
+            this.tabPage1.Controls.Add(this.btnShufflePlaylistDSte);
             this.tabPage1.Controls.Add(this.label3);
             this.tabPage1.Controls.Add(this.btnSaveSearchDSte);
             this.tabPage1.Controls.Add(this.prbTrackIndicatorDSte);
@@ -262,7 +266,7 @@ namespace TuneStore_8_feb_2018 {
             // 
             // btnSaveSearchDSte
             // 
-            this.btnSaveSearchDSte.Location = new System.Drawing.Point(590, 46);
+            this.btnSaveSearchDSte.Location = new System.Drawing.Point(590, 30);
             this.btnSaveSearchDSte.Name = "btnSaveSearchDSte";
             this.btnSaveSearchDSte.Size = new System.Drawing.Size(147, 35);
             this.btnSaveSearchDSte.TabIndex = 9;
@@ -289,7 +293,7 @@ namespace TuneStore_8_feb_2018 {
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(587, 19);
+            this.label1.Location = new System.Drawing.Point(587, 11);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(44, 13);
             this.label1.TabIndex = 6;
@@ -297,7 +301,7 @@ namespace TuneStore_8_feb_2018 {
             // 
             // txbSearchDSte
             // 
-            this.txbSearchDSte.Location = new System.Drawing.Point(637, 19);
+            this.txbSearchDSte.Location = new System.Drawing.Point(637, 4);
             this.txbSearchDSte.Name = "txbSearchDSte";
             this.txbSearchDSte.Size = new System.Drawing.Size(100, 20);
             this.txbSearchDSte.TabIndex = 5;
@@ -340,6 +344,30 @@ namespace TuneStore_8_feb_2018 {
             this.btnPlayTrackDSte.UseVisualStyleBackColor = true;
             this.btnPlayTrackDSte.Click += new System.EventHandler(this.btnPlayTrackDSte_Click);
             // 
+            // btnNextTrackDSte
+            // 
+            this.btnNextTrackDSte.Location = new System.Drawing.Point(358, 94);
+            this.btnNextTrackDSte.Margin = new System.Windows.Forms.Padding(2);
+            this.btnNextTrackDSte.Name = "btnNextTrackDSte";
+            this.btnNextTrackDSte.Size = new System.Drawing.Size(105, 38);
+            this.btnNextTrackDSte.TabIndex = 1;
+            this.btnNextTrackDSte.Tag = "true";
+            this.btnNextTrackDSte.Text = "Next Track";
+            this.btnNextTrackDSte.UseVisualStyleBackColor = true;
+            this.btnNextTrackDSte.Click += new System.EventHandler(this.NextAndPreviosButtons);
+            // 
+            // btnPrevTrackDSte
+            // 
+            this.btnPrevTrackDSte.Location = new System.Drawing.Point(249, 94);
+            this.btnPrevTrackDSte.Margin = new System.Windows.Forms.Padding(2);
+            this.btnPrevTrackDSte.Name = "btnPrevTrackDSte";
+            this.btnPrevTrackDSte.Size = new System.Drawing.Size(105, 38);
+            this.btnPrevTrackDSte.TabIndex = 1;
+            this.btnPrevTrackDSte.Tag = "false";
+            this.btnPrevTrackDSte.Text = "Previous track";
+            this.btnPrevTrackDSte.UseVisualStyleBackColor = true;
+            this.btnPrevTrackDSte.Click += new System.EventHandler(this.NextAndPreviosButtons);
+            // 
             // btnPauseDSte
             // 
             this.btnPauseDSte.Location = new System.Drawing.Point(10, 94);
@@ -355,29 +383,26 @@ namespace TuneStore_8_feb_2018 {
             // 
             this.tmrSpashDSte.Tick += new System.EventHandler(this.tmrSpashDSte_Tick);
             // 
-            // btnPrevTrackDSte
+            // btnShufflePlaylistDSte
             // 
-            this.btnPrevTrackDSte.Location = new System.Drawing.Point(249, 94);
-            this.btnPrevTrackDSte.Margin = new System.Windows.Forms.Padding(2);
-            this.btnPrevTrackDSte.Name = "btnPrevTrackDSte";
-            this.btnPrevTrackDSte.Size = new System.Drawing.Size(105, 38);
-            this.btnPrevTrackDSte.TabIndex = 1;
-            this.btnPrevTrackDSte.Tag = "false";
-            this.btnPrevTrackDSte.Text = "Previous track";
-            this.btnPrevTrackDSte.UseVisualStyleBackColor = true;
-            this.btnPrevTrackDSte.Click += new System.EventHandler(this.NextAndPreviosButtons);
+            this.btnShufflePlaylistDSte.Location = new System.Drawing.Point(590, 106);
+            this.btnShufflePlaylistDSte.Name = "btnShufflePlaylistDSte";
+            this.btnShufflePlaylistDSte.Size = new System.Drawing.Size(146, 35);
+            this.btnShufflePlaylistDSte.TabIndex = 11;
+            this.btnShufflePlaylistDSte.Text = "Shuffle Playlist";
+            this.btnShufflePlaylistDSte.UseVisualStyleBackColor = true;
+            this.btnShufflePlaylistDSte.Click += new System.EventHandler(this.btnShufflePlaylistDSte_Click);
             // 
-            // btnNextTrackDSte
+            // cbAutoShuffleDSte
             // 
-            this.btnNextTrackDSte.Location = new System.Drawing.Point(358, 94);
-            this.btnNextTrackDSte.Margin = new System.Windows.Forms.Padding(2);
-            this.btnNextTrackDSte.Name = "btnNextTrackDSte";
-            this.btnNextTrackDSte.Size = new System.Drawing.Size(105, 38);
-            this.btnNextTrackDSte.TabIndex = 1;
-            this.btnNextTrackDSte.Tag = "true";
-            this.btnNextTrackDSte.Text = "Next Track";
-            this.btnNextTrackDSte.UseVisualStyleBackColor = true;
-            this.btnNextTrackDSte.Click += new System.EventHandler(this.NextAndPreviosButtons);
+            this.cbAutoShuffleDSte.AutoSize = true;
+            this.cbAutoShuffleDSte.Location = new System.Drawing.Point(471, 116);
+            this.cbAutoShuffleDSte.Name = "cbAutoShuffleDSte";
+            this.cbAutoShuffleDSte.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.cbAutoShuffleDSte.Size = new System.Drawing.Size(113, 17);
+            this.cbAutoShuffleDSte.TabIndex = 12;
+            this.cbAutoShuffleDSte.Text = "Auto shuffle songs";
+            this.cbAutoShuffleDSte.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -386,6 +411,7 @@ namespace TuneStore_8_feb_2018 {
             this.ClientSize = new System.Drawing.Size(774, 558);
             this.Controls.Add(this.tabMainDSte);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form1";
@@ -487,6 +513,8 @@ namespace TuneStore_8_feb_2018 {
         private Button btnPauseDSte;
         private Button btnNextTrackDSte;
         private Button btnPrevTrackDSte;
+        private Button btnShufflePlaylistDSte;
+        private CheckBox cbAutoShuffleDSte;
     }
 }
 

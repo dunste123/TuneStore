@@ -18,7 +18,10 @@ namespace TuneStore_8_feb_2018 {
         private ProgressBar progress = null;
         private Timer trackTimer = new Timer();
         private String songName = "";
+        private Form form = null;
+        private String defaultFormText = "";
 
+        #region public functions
         /// <summary>
         /// This creates a new audio manager insance
         /// </summary>
@@ -50,6 +53,14 @@ namespace TuneStore_8_feb_2018 {
             return this;
         }
 
+        public AudioManager SetForm(Form f) {
+            if(f != null) {
+                this.form = f;
+                this.defaultFormText = f.Text;
+            }
+            return this;
+        }
+
         /// <summary>
         /// Holds the name of the currently playing song or last playing song if the player is stopped
         /// </summary>
@@ -66,6 +77,8 @@ namespace TuneStore_8_feb_2018 {
                 string[] split = audioFile.Split('\\');
                 songName = split[split.Length - 1];
                 this.Label.Text = songName + " [Playing]";
+
+                UpdateFormText(" - " + songName);
             }
             
             PlayAudio(path + audioFile);
@@ -86,6 +99,7 @@ namespace TuneStore_8_feb_2018 {
 
             if (this.Label != null)
                 this.Label.Text = "";
+            UpdateFormText("");
 
             StopAudio();
         }
@@ -107,6 +121,7 @@ namespace TuneStore_8_feb_2018 {
             this.Player.Dispose();
             this.Player = null;
         }
+        #endregion
 
         #region audio handeling code
         //Start default audio handling code
@@ -214,6 +229,12 @@ namespace TuneStore_8_feb_2018 {
             if(trackStatus.ToString().Equals("stopped")) {
                 this.trackTimer.Stop();
                 NextSongEvent.Invoke(this, null);
+            }
+        }
+
+        private void UpdateFormText(String text) {
+            if(this.form != null) {
+                this.form.Text = this.defaultFormText + text;
             }
         }
 

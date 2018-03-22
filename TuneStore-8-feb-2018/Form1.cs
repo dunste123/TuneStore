@@ -24,10 +24,12 @@ namespace TuneStore_8_feb_2018 {
 
         public Form1() {
             InitializeComponent();
+            this.Text = "TUNE STORE";
 
             this.manager = new AudioManager()
                 .SetLabel(this.lblCurrentTrackDSte)
-                .SetProgressBar(this.prbTrackIndicatorDSte);
+                .SetProgressBar(this.prbTrackIndicatorDSte)
+                .SetForm(this);
             //Set a handler for the next song event
             this.manager.NextSongEvent += new EventHandler(this.manager_next_song);
         }
@@ -42,13 +44,10 @@ namespace TuneStore_8_feb_2018 {
             this.tmrSpashDSte.Start();
 
             this.lblCurrentTrackDSte.Text = "";
-
-            this.Text = "TUNE STORE";
         }
 
         #region event handlers
         private void btnAddTrackDSte_Click(object sender, EventArgs e) {
-            //
             OpenFileDialog dialog = new OpenFileDialog();
             if (dialog.ShowDialog() == DialogResult.OK) {
                 Track t = new Track(dialog.FileName);
@@ -81,8 +80,13 @@ namespace TuneStore_8_feb_2018 {
         }
 
         private void manager_next_song(object sender, EventArgs e) {
-            int trackindex = getTrackIndex(manager.SongName);
-            PlayTrackFromIndex(trackindex, true);
+            if (!this.cbAutoShuffleDSte.Checked) {
+                int trackindex = getTrackIndex(manager.SongName);
+                PlayTrackFromIndex(trackindex, true);
+            } else {
+                int trackindex = ThreadSafeRandom.ThisThreadsRandom.Next(0, tracks.Count);
+                PlayTrackFromIndex(trackindex);
+            }
         }
 
         private void NextAndPreviosButtons(object sender, EventArgs e) {
@@ -90,11 +94,25 @@ namespace TuneStore_8_feb_2018 {
             int trackindex = getTrackIndex(manager.SongName);
             if (next) {
                 //Next track
+                if (this.cbAutoShuffleDSte.Checked) {
+                    trackindex = ThreadSafeRandom.ThisThreadsRandom.Next(0, tracks.Count);
+                }
                 PlayTrackFromIndex(trackindex, true);
             } else {
                 // prev track
                 PlayTrackFromIndex(trackindex - 2, true);
             }
+        }
+
+        private void btnShufflePlaylistDSte_Click(object sender, EventArgs e) {
+            tracks.Shuffle();
+            int i = 1;
+            foreach (Track track in tracks) {
+                track.DisplayName = i + ": " + track.SafeFileName;
+                i++;
+            }
+            this.lbTracksDSte.Items.Clear();
+            this.lbTracksDSte.Items.AddRange(tracks.ToArray());
         }
 
         /// <summary>
@@ -304,6 +322,7 @@ I'M NOT RESPONSIBLE FOR ANY DAMAGE TO YOUR COMPUTER!", "WARNING", MessageBoxButt
         /// <param name="stopOnFail">if we should stop playing tracks when we fail</param>
         private void PlayTrackFromIndex(int trackindex, bool stopOnFail) {
             try {
+                Console.WriteLine(trackindex);
                 Track t = this.tracks[trackindex];
                 if (t != null) {
                     manager.PlaySong(
@@ -333,6 +352,32 @@ I'M NOT RESPONSIBLE FOR ANY DAMAGE TO YOUR COMPUTER!", "WARNING", MessageBoxButt
             }
         }
         #endregion
+    }
 
+    /// <summary>
+    /// taken from https://stackoverflow.com/a/1262619/4453592
+    /// </summary>
+    public static class ThreadSafeRandom {
+        [ThreadStatic] private static Random Local;
+
+        public static Random ThisThreadsRandom {
+            get { return Local ?? (Local = new Random(unchecked(Environment.TickCount * 31 + Thread.CurrentThread.ManagedThreadId))); }
+        }
+    }
+
+    /// <summary>
+    /// taken from https://stackoverflow.com/a/1262619/4453592
+    /// </summary>
+    static class MyExtensions {
+        public static void Shuffle<T>(this IList<T> list) {
+            int n = list.Count;
+            while (n > 1) {
+                n--;
+                int k = ThreadSafeRandom.ThisThreadsRandom.Next(n + 1);
+                T value = list[k];
+                list[k] = list[n];
+                list[n] = value;
+            }
+        }
     }
 }
