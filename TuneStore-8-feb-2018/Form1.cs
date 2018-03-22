@@ -101,16 +101,16 @@ namespace TuneStore_8_feb_2018 {
         /// This does the things for the splash screen trackbar
         /// </summary>
         private void SplashScreen() {
-            this.prbSplashDSte.Value = 100;
+            //this.prbSplashDSte.Value = 100;
             if (this.prbSplashDSte.Value < 100)
                 this.prbSplashDSte.Value++;
             if(this.prbSplashDSte.Value == 100) {
                 this.tmrSpashDSte.Stop();
-                //Thread.Sleep(100);
-                //for (int i = 0; i < 20; i++) {
-                //    Thread.Sleep(100);
-                //    Application.DoEvents();
-                //}
+                Thread.Sleep(100);
+                for (int i = 0; i < 20; i++) {
+                    Thread.Sleep(100);
+                    Application.DoEvents();
+                }
                 this.tabMainDSte.SelectTab(1);
             }
 
