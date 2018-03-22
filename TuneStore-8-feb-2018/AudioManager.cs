@@ -53,6 +53,11 @@ namespace TuneStore_8_feb_2018 {
             return this;
         }
 
+        /// <summary>
+        /// Sets the form object so that we can append and remove the playing song title
+        /// </summary>
+        /// <param name="f">the form</param>
+        /// <returns>The audio manager, useful for chaining</returns>
         public AudioManager SetForm(Form f) {
             if(f != null) {
                 this.form = f;
@@ -232,6 +237,10 @@ namespace TuneStore_8_feb_2018 {
             }
         }
 
+        /// <summary>
+        /// Updates the text on the form
+        /// </summary>
+        /// <param name="text">The text to append</param>
         private void UpdateFormText(String text) {
             if(this.form != null) {
                 this.form.Text = this.defaultFormText + text;
