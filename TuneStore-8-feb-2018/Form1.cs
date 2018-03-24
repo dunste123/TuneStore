@@ -24,11 +24,15 @@ namespace TuneStore_8_feb_2018 {
 
         public Form1() {
             InitializeComponent();
+
+            this.songsToolStripMenuItem.Enabled = false;
+            this.fiileToolStripMenuItem.Enabled = false;
+
             this.Text = "TUNE STORE";
 
             this.manager = new AudioManager()
                 .SetLabel(this.lblCurrentTrackDSte)
-                .SetProgressBar(this.prbTrackIndicatorDSte)
+                .SetTrackBar(this.trbSongPosDSte)
                 .SetForm(this);
             //Set a handler for the next song event
             this.manager.NextSongEvent += new EventHandler(this.manager_next_song);
@@ -104,6 +108,17 @@ namespace TuneStore_8_feb_2018 {
             }
         }
 
+        private void SeekButtons(object sender, EventArgs e) {
+            Button b = (Button) sender;
+            bool forward = Boolean.Parse( b.Tag.ToString()) ;
+            manager.SeekPlayer5Seconds(forward);
+
+        }
+
+        private void trbSongPosDSte_Scroll(object sender, EventArgs e) {
+            manager.SeekTrack(this.trbSongPosDSte.Value);
+        }
+
         private void btnShufflePlaylistDSte_Click(object sender, EventArgs e) {
             tracks.Shuffle();
             int i = 1;
@@ -130,6 +145,9 @@ namespace TuneStore_8_feb_2018 {
                     Application.DoEvents();
                 }
                 this.tabMainDSte.SelectTab(1);
+
+                this.songsToolStripMenuItem.Enabled = true;
+                this.fiileToolStripMenuItem.Enabled = true;
             }
 
         }
@@ -322,7 +340,6 @@ I'M NOT RESPONSIBLE FOR ANY DAMAGE TO YOUR COMPUTER!", "WARNING", MessageBoxButt
         /// <param name="stopOnFail">if we should stop playing tracks when we fail</param>
         private void PlayTrackFromIndex(int trackindex, bool stopOnFail) {
             try {
-                Console.WriteLine(trackindex);
                 Track t = this.tracks[trackindex];
                 if (t != null) {
                     manager.PlaySong(

@@ -16,6 +16,7 @@ namespace TuneStore_8_feb_2018 {
         private Label Label = null;
         int songLength = 0;
         private ProgressBar progress = null;
+        private TrackBar trackBar = null;
         private Timer trackTimer = new Timer();
         private String songName = "";
         private Form form = null;
@@ -44,12 +45,22 @@ namespace TuneStore_8_feb_2018 {
         }
 
         /// <summary>
-        /// This sets the progress bar that should display the track lengh
+        /// This sets the progress bar that should display the track lengh and the song pos
         /// </summary>
         /// <param name="bar">The form element</param>
         /// <returns>The audio manager, useful for chaining</returns>
         public AudioManager SetProgressBar(ProgressBar bar) {
             this.progress = bar;
+            return this;
+        }
+
+        /// <summary>
+        /// This sets the track bar that should display the track lengh and the song pos
+        /// </summary>
+        /// <param name="bar">The form element</param>
+        /// <returns>The audio manager, useful for chaining</returns>
+        public AudioManager SetTrackBar(TrackBar bar) {
+            this.trackBar = bar;
             return this;
         }
 
@@ -126,6 +137,25 @@ namespace TuneStore_8_feb_2018 {
             this.Player.Dispose();
             this.Player = null;
         }
+
+        /// <summary>
+        /// Seeks the track 5 seconds forwards or backwardsw
+        /// </summary>
+        /// <param name="forward">true for forwards, false for backwards</param>
+        public void SeekPlayer5Seconds(Boolean forward) {
+            if (forward) Seek5SecondForward();
+            else Seek5SecondBarwards();
+        }
+
+        /// <summary>
+        /// Sets the track to position
+        /// </summary>
+        /// <param name="pos">Seeks the track to the pos</param>
+        public void SeekTrack(int pos) {
+            if (pos < 0 || pos > songLength) return;
+            mciSendString("seek MediaFile to " + pos, null, 0, IntPtr.Zero);
+            mciSendString("play MediaFile", null, 0, IntPtr.Zero);
+        }
         #endregion
 
         #region audio handeling code
@@ -158,18 +188,28 @@ namespace TuneStore_8_feb_2018 {
             mciSendString("close MediaFile", null, 0, IntPtr.Zero);
             this.trackTimer.Stop();
         }
-
+       
         private void PauseUnpauseAudio() {
-            StringBuilder audioStatus = new StringBuilder(128);
-            mciSendString("status MediaFile mode", audioStatus, 128, IntPtr.Zero);
-
-            if(audioStatus.ToString().Equals("playing")) {
+            if(!IsPlayerPaused()) {
                 mciSendString("pause MediaFile", null, 0, IntPtr.Zero);
+                UpdateFormText("");
                 this.Label.Text = songName + " [Paused]";
             } else {
                 mciSendString("resume MediaFile", null, 0, IntPtr.Zero);
                 this.Label.Text = songName + " [Playing]";
+                UpdateFormText(" - " + songName);
             }
+        }
+
+        /// <summary>
+        /// Returns if the player is stopped
+        /// </summary>
+        /// <returns>if the player is stopped</returns>
+        private Boolean IsPlayerPaused() {
+            StringBuilder audioStatus = new StringBuilder(128);
+            mciSendString("status MediaFile mode", audioStatus, 128, IntPtr.Zero);
+            Console.WriteLine(audioStatus.ToString());
+            return audioStatus.ToString().Equals("stopped");
         }
 
         //End default audio handling code
@@ -190,7 +230,7 @@ namespace TuneStore_8_feb_2018 {
         /// <summary>
         /// Gets the playing posistion of the song and sets it in the progress bar
         /// </summary>
-        private void GetSongPosition() {
+        private void SetSongPositionOnTrackBar() {
             int m_songPosition;
 
             StringBuilder m_songPositionAsString = new StringBuilder(128);
@@ -200,6 +240,23 @@ namespace TuneStore_8_feb_2018 {
             m_songPosition = Convert.ToInt32(Convert.ToString(m_songPositionAsString));
 
             SetProgressValue(m_songPosition);
+        }
+        private int GetSongPosition() {
+           StringBuilder m_songPositionAsString = new StringBuilder(128);
+
+            mciSendString("status MediaFile position", m_songPositionAsString, 128, IntPtr.Zero);
+
+            return Convert.ToInt32(m_songPositionAsString.ToString());
+        }
+        private void Seek5SecondForward() {
+            //mciSendString("set MediaFile time format ms", null, 0, IntPtr.Zero);
+            mciSendString("seek MediaFile to " + (GetSongPosition() + 5000), null, 0, IntPtr.Zero);
+            mciSendString("play MediaFile", null, 0, IntPtr.Zero);
+        }
+        private void Seek5SecondBarwards() {
+            //mciSendString("set MediaFile time format ms", null, 0, IntPtr.Zero);
+            mciSendString("seek MediaFile to " + (GetSongPosition() - 5000), null, 0, IntPtr.Zero);
+            mciSendString("play MediaFile", null, 0, IntPtr.Zero);
         }
         #endregion
 
@@ -212,6 +269,8 @@ namespace TuneStore_8_feb_2018 {
         private void SetProgressMax(int value) {
             if (this.progress != null)
                 progress.Maximum = value;
+            if (this.trackBar != null)
+                this.trackBar.Maximum = value;
         }
 
         /// <summary>
@@ -223,15 +282,17 @@ namespace TuneStore_8_feb_2018 {
         private void SetProgressValue(int val) {
             if (this.progress != null)
                 progress.Value = val;
+            if (this.trackBar != null)
+                this.trackBar.Value = val;
         }
 
         private void trackTimer_tick(object sender, EventArgs e) {
-            GetSongPosition();
+            SetSongPositionOnTrackBar();
             StringBuilder trackStatus = new StringBuilder(128);
 
             mciSendString("status MediaFile mode", trackStatus, 128, IntPtr.Zero);
 
-            if(trackStatus.ToString().Equals("stopped")) {
+            if(trackStatus.ToString().Equals("stopped") && GetSongPosition() == this.songLength) {
                 this.trackTimer.Stop();
                 NextSongEvent.Invoke(this, null);
             }
