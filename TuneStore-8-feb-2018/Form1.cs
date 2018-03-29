@@ -20,7 +20,8 @@ namespace TuneStore_8_feb_2018 {
         private List<Track> tracks = new List<Track>();
         private Regex regex = new Regex("(?:\\d+\\: )(.*)");
         //These are the file types that you are allowed to open
-        private String fileFilter = "TuneStorePlaylist (*.tstore)|*.tstore|JSON file (*.json)|*.json|Text (*.txt)|*.txt|All Types|*";
+        //private String fileFilter = "TuneStorePlaylist (*.tstore)|*.tstore|JSON file (*.json)|*.json|Text (*.txt)|*.txt|All Types|*";
+        private String fileFilter = "TuneStorePlaylist (*.tstore)|*.tstore|All Types|*";
 
         public Form1() {
             InitializeComponent();
@@ -158,6 +159,7 @@ namespace TuneStore_8_feb_2018 {
 
         private void btnPlayTrackDSte_Click(object sender, EventArgs e) {
             int yes = toInteget(this.txbTrackNumDSte.Text);
+            this.txbTrackNumDSte.Text = "";
             if (yes == int.MinValue) {
                 MessageBox.Show("Please enter a valid number in the textbox next to the button", "Whoops", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;

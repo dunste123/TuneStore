@@ -1,0 +1,1 @@
+Yes I made all the other assignments for tunestore in the same solution, deal with it <3

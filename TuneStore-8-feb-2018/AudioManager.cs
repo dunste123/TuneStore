@@ -209,7 +209,7 @@ namespace TuneStore_8_feb_2018 {
             StringBuilder audioStatus = new StringBuilder(128);
             mciSendString("status MediaFile mode", audioStatus, 128, IntPtr.Zero);
             Console.WriteLine(audioStatus.ToString());
-            return audioStatus.ToString().Equals("stopped");
+            return audioStatus.ToString().Equals("paused");
         }
 
         //End default audio handling code
